@@ -18,7 +18,9 @@ class section:
         if not self._loadID:
             return Exception('section-not-loaded')
 
-        _sqldb.execute('DELETE FROM sections WHERE sid = "%s"' % self._loadID)
+        self._sqldb.execute(
+            'DELETE FROM sections WHERE sid = "%s"' % self._loadID
+        )
         self._loadID = False
         return
 
@@ -37,8 +39,8 @@ class section:
     def existence(self, sectionID):
         sql = "SELECT sid, name FROM sections WHERE sid = '%s'" % sectionID
         queryResult = self._sqldb.fetchOne(sql)
-        print sql
-        print queryResult
+#       print sql
+#       print queryResult
         if not queryResult:
             return False
         return queryResult
@@ -90,7 +92,7 @@ class section:
         nowtime = int(time.time())
         """
 
-        sql = "SELECT tid, title, content, time FROM topics WHERE "\
+        sql = "SELECT tid, title, time FROM topics WHERE "\
             + ("pid = '%s' ORDER BY time DESC " % self._loadID)\
             + ("LIMIT %d OFFSET %d" % (perpage, (page - 1) * perpage))
 
@@ -99,8 +101,7 @@ class section:
             {
                 'tid': each[0],
                 'title': each[1].decode('hex'),
-                'content': each[2].decode('hex'),
-                'time': each[3],
+                'time': each[2],
             }
             for each in result
         ]

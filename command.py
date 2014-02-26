@@ -61,16 +61,31 @@ if mainAction == 'section':
             print '! %s' % result
             sys.exit(2)
 
+    ############### FOLLOWING REQUIRES LOADING THIS SECTION ##############
+
+    result = thisSection.load(sectionSpec)
+    if True != result:
+        print '! %s' % result
+        sys.exit(2)
+
     if subAction == 'delete':
-        pass
+        thisSection.delete()
+        sys.exit(0)
 
     if subAction == 'list':
-        pass
+        page = 1
+        perpage = 50
+        try:
+            page = argv[0]
+            perpage = argv[1]
+        except:
+            pass
+        result = thisSection.list(page, perpage)
+        print result
+        sys.exit(0)
 
     if subAction == 'post':
         pass
-
-
 
 
 ################################## TOPIC #####################################
