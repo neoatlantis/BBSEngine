@@ -28,6 +28,7 @@ class topic:
     _sectionID = False
 
     _topicID = False
+    _parentID = False
     
     def __init__(self, sqldb, sectionID):
         self._sqldb = sqldb
@@ -48,11 +49,11 @@ class topic:
         self._sqldb.insert(
             'topics', 
             {
-                'tid': topicID,
-                'pid': self._sectionID,
+                'tid': topicID,         # of this new topic
+                'pid': self._sectionID, # under which section this topic is
                 'title': title.encode('hex'),
                 'content': content.encode('hex'),
-                'sid': self._sectionID,
+                'sid': self._sectionID, # cache section, also for replys
                 'time': posttime,
             }
         )
@@ -67,7 +68,7 @@ class topic:
         if not _isTopicID(topicID):
             return Exception('not-topic-id')
         
-        sql = 'SELECT tid, sid, content, title FROM topics '\
+        sql = 'SELECT tid, sid, content, title, pid FROM topics '\
             + ('WHERE tid = "%s"' % topicID)
         result = self._sqldb.fetchOne(sql)
 
@@ -78,12 +79,17 @@ class topic:
         self._sectionID = result[1]
         self.content = result[2].decode('hex')
         self.title = result[3].decode('hex')
+        self._parentID = result[4]
 
         return True 
 
     def reply(self, content, **argv):
         if not self._topicID:
             return Exception('topic-not-loaded')
+
+        if not _isSectionID(self._parentID):
+            # now disable replying to a reply
+            return Exception('not-allowed-replying-to-a-reply')
 
         topicID = _getTopicID(self._topicID, '', content)
         posttime = int(time.time())
@@ -96,8 +102,8 @@ class topic:
         self._sqldb.insert(
             'topics', 
             {
-                'tid': topicID,
-                'pid': self._topicID,
+                'tid': topicID,         # of this new reply
+                'pid': self._topicID,   # to which this new reply belongs
                 'title': '',
                 'content': content.encode('hex'),
                 'sid': self._sectionID,
@@ -105,7 +111,7 @@ class topic:
             }
         )
 
-        return True
+        return topicID
 
     def list(self, page, perpage=30):
         if not self._topicID:
@@ -116,9 +122,17 @@ class topic:
         except:
             page, prepage = 1, 30
 
-        sql = "SELECT tid, title, content FROM topics WHERE "\
-            + ("pid = '%s' ORDER BY time DESC " % self._topicID)\
+        sql = "SELECT tid, title, content, time FROM topics WHERE "\
+            + ("pid = '%s' ORDER BY time " % self._topicID)\
             + ("LIMIT %d OFFSET %d" % (perpage, (page - 1) * perpage))
 
         result = self._sqldb.fetchMore(sql)
+        result = [\
+            {
+                'tid': each[0],
+                'content': each[2].decode('hex'),
+                'time': each[3],
+            }
+            for each in result
+        ]
         return result

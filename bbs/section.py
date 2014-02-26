@@ -82,7 +82,7 @@ class section:
         nowtime = int(time.time())
         """
 
-        sql = "SELECT tid, title, content FROM topics WHERE "\
+        sql = "SELECT tid, title, content, time FROM topics WHERE "\
             + ("pid = '%s' ORDER BY time DESC " % self._loadID)\
             + ("LIMIT %d OFFSET %d" % (perpage, (page - 1) * perpage))
 
@@ -92,6 +92,7 @@ class section:
                 'tid': each[0],
                 'title': each[1].decode('hex'),
                 'content': each[2].decode('hex'),
+                'time': each[3],
             }
             for each in result
         ]
