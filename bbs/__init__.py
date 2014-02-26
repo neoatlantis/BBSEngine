@@ -5,6 +5,7 @@ def initDatabase(sqldb):
         """
             CREATE TABLE "main"."sections" (
                 "sid" TEXT NOT NULL,
+                "alias" TEXT,
                 "name" TEXT,
                 "arguments" TEXT
             );
