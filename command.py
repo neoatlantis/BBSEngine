@@ -47,6 +47,7 @@ if mainAction == 'initialize':
 if mainAction == 'section':
     try:
         sectionSpec = argv[0]
+        argv = argv[1:]
     except:
         print usage
         sys.exit(1)
@@ -81,11 +82,29 @@ if mainAction == 'section':
         except:
             pass
         result = thisSection.list(page, perpage)
-        print result
-        sys.exit(0)
+        if type(result) == list:
+            print result
+            sys.exit(0)
+        else:
+            print '! %s' % result
+            sys.exit(2)
 
     if subAction == 'post':
-        pass
+        try:
+            title = argv[0]
+            content = argv[1]
+            argv = argv[2:]
+        except:
+            print usage
+            sys.exit(1)
+        thisTopic = thisSection.topic()
+        result = thisTopic.create(title, content)
+        if type(result) != str:
+            print '! %s' % result
+            sys.exit(2)
+        else:
+            print '* %s' % result
+            sys.exit(0)
 
 
 ################################## TOPIC #####################################

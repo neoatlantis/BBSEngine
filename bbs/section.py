@@ -73,8 +73,9 @@ class section:
             return Exception('section-not-loaded')
 
         try:
-            page, prepage = int(page), int(prepage)
-        except:
+            page = int(page)
+            perpage = int(perpage)
+        except Exception, e:
             page, prepage = 1, 50
 
         """

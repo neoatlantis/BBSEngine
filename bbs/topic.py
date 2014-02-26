@@ -63,7 +63,9 @@ class topic:
         # inform the update of this section
         # TODO
 
-        self.load(topicID)
+        result = self.load(topicID)
+        if True != result:
+            return Exception('topic-creation-failure')
         return topicID
 
     def load(self, topicID):
