@@ -2,21 +2,7 @@
 import hashlib
 import re
 
-def _isSectionID(test):
-    if re.match('^\\$[0-9a-f]{32}$', test):
-        return True
-    return False
-
-def _regulateSectionName(sectionName):
-    return sectionName.strip().lower()
-
-def _getSectionID(sectionNameOrID):
-    if _isSectionID(sectionNameOrID):
-        return sectionNameOrID
-    else:
-        regulated = _regulateSectionName(sectionNameOrID)
-        digest = hashlib.sha1(regulated).hexdigest()
-        return '$' + digest[:32]
+from _id import _isSectionID, _regulateSectionName, _getSectionID
 
 ##############################################################################
 

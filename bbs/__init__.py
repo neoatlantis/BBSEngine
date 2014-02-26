@@ -10,6 +10,16 @@ def initDatabase(sqldb):
                 "arguments" TEXT
             );
         """,
+        """
+            CREATE TABLE "main"."topics" (
+                "tid" TEXT NOT NULL,
+                "pid" TEXT,
+                "title" TEXT,
+                "content" TEXT,
+                "sid" TEXT,
+                "arguments" TEXT
+            );
+        """,
     ]
 
     for each in sqls:
