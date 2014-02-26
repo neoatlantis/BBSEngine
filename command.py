@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+import sys
+
+from  bbs import initDatabase
+from sql.sqlite import sqlite
+
 usage = """
 Usage:
     python command.py <DATABASE> initialize
@@ -12,3 +17,41 @@ Usage:
     python command.py <DATABASE> topic delete <TOPIC-ID>
     python command.py <DATABASE> topic list <TOPIC-ID> [PAGE=1] [COUNT-PER-PAGE=30]
 """.strip()
+
+argvProgram = sys.argv[0]
+argv = sys.argv[1:]
+
+try:
+    dbpath = argv[0]
+    mainAction = argv[1]
+    if mainAction != 'initialize':
+        subAction = argv[2]
+        argv = argv[2:]
+except:
+    print usage
+    sys.exit(1)
+
+
+sqldb = sqlite(filename="test.sqlite")
+
+################################ INITIALIZE ##################################
+if mainAction == 'initialize':
+    initDatabase(sqldb)
+    sqldb.close()
+    sys.exit(0)
+
+################################# SECTION ####################################
+if mainAction == 'section':
+    pass
+
+################################## TOPIC #####################################
+if mainAction == 'topic':
+    try:
+        topicID = argv[0]
+    except:
+        print usage
+        sys.exit(1)
+
+
+################################### END ######################################
+sys.exit(127)
