@@ -6,8 +6,12 @@ class sqlite:
     _con = False
     
     def __init__(self, **argv):
-        self._dbfile = argv.filename
+        self._dbfile = argv['filename']
         self._con = sqlite3.connect(self._dbfile)
+
+    def close(self):
+        self._con.close()
+        return
 
     def fetchOne(self, sql):
         cursor = self._con.cursor()
@@ -15,3 +19,9 @@ class sqlite:
         result = cursor.fetchone()
         cursor.close()
         return result
+
+    def execute(self, sql):
+        cursor = self._con.cursor()
+        cursor.execute(sql)
+        cursor.close()
+        return

@@ -10,3 +10,6 @@ def initDatabase(sqldb):
             );
         """,
     ]
+
+    for each in sqls:
+        sqldb.execute(each)

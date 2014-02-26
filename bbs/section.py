@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import hashlib
 import re
 
 def _getSectionID(sectionNameOrID):
@@ -16,17 +17,18 @@ class section:
     _sqldb = False
     
     def __init__(self, sqldb):
-        _sqldb = sqldb
+        self._sqldb = sqldb
 
     def load(self, sectionNameOrID):
         wantedID = _getSectionID(sectionNameOrID)
         # TODO alias
-        sql = "SELECT * FROM sections WHERE id = '%s'" % wantedID
+        sql = "SELECT * FROM sections WHERE sid = '%s'" % wantedID
 
         queryResult = self._sqldb.fetchOne(sql)
         
         if not queryResult:
             return Exception('section-not-exists')
+
         
 
 

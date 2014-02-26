@@ -1,8 +1,9 @@
-from  bbs import initDatabase
+from  bbs.section import section
 from sql.sqlite import sqlite
 
 sqldb = sqlite(filename="test.sqlite")
 
-initDatabase(sqldb)
+s = section(sqldb)
+print s.load('test')
 
 sqldb.close()
