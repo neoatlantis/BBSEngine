@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
 
 def initDatabase(sqldb):
-    sqls = []
+    sqls = [
+        """
+            CREATE TABLE "main"."sections" (
+                "sid" TEXT NOT NULL,
+                "name" TEXT,
+                "arguments" TEXT
+            );
+        """,
+    ]
