@@ -4,7 +4,14 @@ from sql.sqlite import sqlite
 sqldb = sqlite(filename="test.sqlite")
 
 s = section(sqldb)
-print s.load('test')
-print s.create('test')
+
+if True != s.load('test'):
+    print '***** Create Section *****'
+    print s.create('test')
+
+print s.name
+
+topic = s.topic()
+topic.create('first topic', 'content')
 
 sqldb.close()

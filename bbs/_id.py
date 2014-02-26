@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+import hashlib
+import re
 
 def _isTopicID(test):
     if re.match('^\\$[0-9a-f]{40}$', test):

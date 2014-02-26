@@ -25,6 +25,8 @@ class topic:
     
     _sqldb = False
     _sectionID = False
+
+    _topicID = False
     
     def __init__(self, sqldb, sectionID):
         self._sqldb = sqldb
@@ -32,7 +34,7 @@ class topic:
             raise Exception('not-section-id')
         self._sectionID = sectionID
 
-    def new(self, title, content, **argv):
+    def create(self, title, content, **argv):
         topicID = _getTopicID(self._sectionID, title, content)
 
         self._sqldb.insert(
@@ -49,13 +51,17 @@ class topic:
         # inform the update of this section
         # TODO
 
+        print self._sqldb.fetchOne('SELECT * FROM topics')
+
+        self.load(topicID)
         return topicID
 
     def load(self, topicID):
         if not _isTopicID(topicID):
             return Exception('not-topic-id')
 
-        pass
+        self._topicID = topicID
 
     def reply(self, content, **argv):
-        pass
+        if not self._topicID:
+            return Exception('topic-not-loaded')

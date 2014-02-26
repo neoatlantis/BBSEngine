@@ -27,8 +27,9 @@ class sqlite:
         return
 
     def insert(self, table, kvs):
-        keys = ", ".join(['`%s`' % i for i in kvs.keys()])
+        keys = ", ".join(['%s' % i for i in kvs.keys()])
         values = ", ".join(['"%s"' % i for i in kvs.values()])
         sql = "INSERT INTO %s(%s) VALUES(%s)" % (table, keys, values)
         self.execute(sql)
+        self._con.commit()
         return
