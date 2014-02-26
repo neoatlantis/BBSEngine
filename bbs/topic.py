@@ -30,11 +30,13 @@ class topic:
     _topicID = False
     _parentID = False
     
-    def __init__(self, sqldb, sectionID):
+    def __init__(self, sqldb, sectionID=False):
         self._sqldb = sqldb
-        if not _isSectionID(sectionID):
-            raise Exception('not-section-id')
-        self._sectionID = sectionID
+
+        if sectionID:
+            if not _isSectionID(sectionID):
+                raise Exception('not-section-id')
+            self._sectionID = sectionID
 
     def create(self, title, content, **argv):
         topicID = _getTopicID(self._sectionID, title, content)

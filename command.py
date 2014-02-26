@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from  bbs import initDatabase
+from bbs import initDatabase
+from bbs.topic import topic
+from bbs.section import section
 from sql.sqlite import sqlite
 
 usage = """
@@ -52,6 +54,15 @@ if mainAction == 'topic':
         print usage
         sys.exit(1)
 
+    thisTopic = topic(sqldb)
+    loadResult = thisTopic.load(topicID)
+    if loadResult != True:
+        print '! %s' % loadResult 
+        sys.exit(2)
+
+    if subAction == 'delete':
+        pass
 
 ################################### END ######################################
+print mainAction
 sys.exit(127)
