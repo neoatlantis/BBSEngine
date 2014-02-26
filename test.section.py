@@ -12,6 +12,8 @@ if True != s.load('test'):
 print s.name
 
 topic = s.topic()
-topic.create('first topic', 'content')
+#topic.create('first topic', 'content')
+
+print s.list(1)
 
 sqldb.close()

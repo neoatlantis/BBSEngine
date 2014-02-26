@@ -20,14 +20,22 @@ class sqlite:
         cursor.close()
         return result
 
+    def fetchMore(self, sql):
+        cursor = self._con.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        cursor.close()
+        return result
+
     def execute(self, sql):
         cursor = self._con.cursor()
         cursor.execute(sql)
         cursor.close()
+        self._con.commit()
         return
 
     def insert(self, table, kvs):
-        keys = ", ".join(['%s' % i for i in kvs.keys()])
+        keys = ", ".join(['`%s`' % i for i in kvs.keys()])
         values = ", ".join(['"%s"' % i for i in kvs.values()])
         sql = "INSERT INTO %s(%s) VALUES(%s)" % (table, keys, values)
         self.execute(sql)

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-import hashlib
-import re
+import time
 
 from _id import _isSectionID, _regulateSectionName, _getSectionID
 from topic import topic
@@ -59,12 +58,44 @@ class section:
         self.load(sectionID)
         return True
 
-    def list(self, page):
+    def list(self, page, perpage=50):
+        if not self._loadID:
+            return Exception('section-not-loaded')
+
         try:
-            page = int(page)
+            page, prepage = int(page), int(prepage)
         except:
-            page = 1
-        sql = "SELECT * FROM sections WHERE sid = '%s'" % self._loadID
+            page, prepage = 1, 50
+
+        """
+        # caching
+
+        sql = "SELECT lastUpdate FROM sections WHERE sid = '%s'" % \
+            self._loadID
+
+        sectionQuery = self._sqldb.fetchOne(sql)
+        try:
+            lastUpdate = int(sectionQuery[0])
+        except:
+            lastUpdate = 0
+
+        nowtime = int(time.time())
+        """
+
+        sql = "SELECT tid, title, content FROM topics WHERE "\
+            + ("pid = '%s' ORDER BY time DESC " % self._loadID)\
+            + ("LIMIT %d OFFSET %d" % (perpage, (page - 1) * perpage))
+
+        result = self._sqldb.fetchMore(sql)
+        result = [\
+            {
+                'tid': each[0],
+                'title': each[1].decode('hex'),
+                'content': each[2].decode('hex'),
+            }
+            for each in result
+        ]
+        return result
 
     def refresh(self):
         pass

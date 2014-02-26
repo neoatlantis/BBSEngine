@@ -7,7 +7,8 @@ def initDatabase(sqldb):
                 "sid" TEXT NOT NULL,
                 "alias" TEXT,
                 "name" TEXT,
-                "arguments" TEXT
+                "arguments" TEXT,
+                "needUpdate" INTEGER
             );
         """,
         """
@@ -17,6 +18,7 @@ def initDatabase(sqldb):
                 "title" TEXT,
                 "content" TEXT,
                 "sid" TEXT,
+                "time" INTEGER,
                 "arguments" TEXT
             );
         """,

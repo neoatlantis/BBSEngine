@@ -17,6 +17,7 @@ topic:
 """
 
 import hashlib
+import time
 
 from _id import _isTopicID, _getTopicID, _isSectionID
 
@@ -37,6 +38,13 @@ class topic:
     def create(self, title, content, **argv):
         topicID = _getTopicID(self._sectionID, title, content)
 
+        posttime = int(time.time())
+        try:
+            if argv.has_key('time'):
+                posttime = int(argv['time'])
+        except:
+            pass
+
         self._sqldb.insert(
             'topics', 
             {
@@ -45,13 +53,12 @@ class topic:
                 'title': title.encode('hex'),
                 'content': content.encode('hex'),
                 'sid': self._sectionID,
+                'time': posttime,
             }
         )
 
         # inform the update of this section
         # TODO
-
-        print self._sqldb.fetchOne('SELECT * FROM topics')
 
         self.load(topicID)
         return topicID
@@ -59,9 +66,59 @@ class topic:
     def load(self, topicID):
         if not _isTopicID(topicID):
             return Exception('not-topic-id')
+        
+        sql = 'SELECT tid, sid, content, title FROM topics '\
+            + ('WHERE tid = "%s"' % topicID)
+        result = self._sqldb.fetchOne(sql)
 
-        self._topicID = topicID
+        if not result:
+            return Exception('topic-not-exists')
+
+        self._topicID = result[0] 
+        self._sectionID = result[1]
+        self.content = result[2].decode('hex')
+        self.title = result[3].decode('hex')
+
+        return True 
 
     def reply(self, content, **argv):
         if not self._topicID:
             return Exception('topic-not-loaded')
+
+        topicID = _getTopicID(self._topicID, '', content)
+        posttime = int(time.time())
+        try:
+            if argv.has_key('time'):
+                posttime = int(argv['time'])
+        except:
+            pass
+
+        self._sqldb.insert(
+            'topics', 
+            {
+                'tid': topicID,
+                'pid': self._topicID,
+                'title': '',
+                'content': content.encode('hex'),
+                'sid': self._sectionID,
+                'time': posttime,
+            }
+        )
+
+        return True
+
+    def list(self, page, perpage=30):
+        if not self._topicID:
+            return Exception('topic-not-loaded')
+
+        try:
+            page, prepage = int(page), int(prepage)
+        except:
+            page, prepage = 1, 30
+
+        sql = "SELECT tid, title, content FROM topics WHERE "\
+            + ("pid = '%s' ORDER BY time DESC " % self._topicID)\
+            + ("LIMIT %d OFFSET %d" % (perpage, (page - 1) * perpage))
+
+        result = self._sqldb.fetchMore(sql)
+        return result
