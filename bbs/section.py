@@ -55,7 +55,7 @@ class section:
         if False != self.existence(sectionID):
             return Exception('section-already-exists')
 
-        sqldb.insert(
+        self._sqldb.insert(
             'sections',
             {
                 'sid': sectionID,
