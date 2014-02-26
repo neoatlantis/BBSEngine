@@ -81,7 +81,15 @@ class topic:
         self.title = result[3].decode('hex')
         self._parentID = result[4]
 
-        return True 
+        return True
+
+    def delete(self):
+        if not self._topicID:
+            return Exception('topic-not-loaded')
+
+        _sqldb.execute('DELETE FROM topics WHERE tid = "%s"' % self._loadID)
+        self._topicID = False
+        return
 
     def reply(self, content, **argv):
         if not self._topicID:

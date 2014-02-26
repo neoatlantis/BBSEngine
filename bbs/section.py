@@ -14,6 +14,14 @@ class section:
     def __init__(self, sqldb):
         self._sqldb = sqldb
 
+    def delete(self):
+        if not self._loadID:
+            return Exception('section-not-loaded')
+
+        _sqldb.execute('DELETE FROM sections WHERE sid = "%s"' % self._loadID)
+        self._loadID = False
+        return
+
     def load(self, sectionNameOrID):
         wantedID = _getSectionID(sectionNameOrID)
         # TODO alias
