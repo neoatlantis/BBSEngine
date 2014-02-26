@@ -11,9 +11,9 @@ Usage:
     python command.py <DATABASE> initialize
 
     python command.py <DATABASE> section create <SECTION-NAME>
-    python command.py <DATABASE> section delete <name SECTION-NAME|id SECTION-ID>
-    python command.py <DATABASE> section list <name SECTION-NAME|id SECTION-ID> [PAGE=1] [COUNT-PER-PAGE=30]
-    python command.py <DATABASE> section post <name SECTION-NAME|id SECTION-ID> <TITLE> <CONTENT> [ARGUMENTS]
+    python command.py <DATABASE> section delete <SECTION-NAME|SECTION-ID>
+    python command.py <DATABASE> section list <SECTION-NAME|SECTION-ID> [PAGE=1] [COUNT-PER-PAGE=30]
+    python command.py <DATABASE> section post <SECTION-NAME|SECTION-ID> <TITLE> <CONTENT> [ARGUMENTS]
 
     python command.py <DATABASE> topic reply <TOPIC-ID> <CONTENT> [ARGUMENTS]
     python command.py <DATABASE> topic delete <TOPIC-ID>
@@ -26,9 +26,10 @@ argv = sys.argv[1:]
 try:
     dbpath = argv[0]
     mainAction = argv[1]
+    argv = argv[2:]
     if mainAction != 'initialize':
-        subAction = argv[2]
-        argv = argv[2:]
+        subAction = argv[0]
+        argv = argv[1:]
 except:
     print usage
     sys.exit(1)
@@ -44,7 +45,33 @@ if mainAction == 'initialize':
 
 ################################# SECTION ####################################
 if mainAction == 'section':
-    pass
+    try:
+        sectionSpec = argv[0]
+    except:
+        print usage
+        sys.exit(1)
+
+    thisSection = section(sqldb)
+
+    if subAction == 'create':
+        result = thisSection.create(sectionSpec)
+        if result == True:
+            sys.exit(0)
+        else:
+            print '! %s' % result
+            sys.exit(2)
+
+    if subAction == 'delete':
+        pass
+
+    if subAction == 'list':
+        pass
+
+    if subAction == 'post':
+        pass
+
+
+
 
 ################################## TOPIC #####################################
 if mainAction == 'topic':
